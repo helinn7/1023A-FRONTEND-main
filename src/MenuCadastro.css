@@ -1,0 +1,45 @@
+.menu-cadastro-container {
+    background: url('https://preview.redd.it/104mtc98lr351.gif?width=500&auto=webp&s=530ff62583fc8623bad4b64e53a5d0283171e7ab') no-repeat fixed;
+    background-size: 1000px;
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.menu-cadastro {
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    max-width: 500px;
+    width: 90%;
+}
+
+.menu-cadastro h2 {
+    margin-bottom: 1.5rem;
+    color: #333;
+}
+
+.botoes-cadastro {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.botoes-cadastro button {
+    padding: 0.8rem;
+    border: none;
+    border-radius: 5px;
+    background-color: #4CAF50;
+    color: white;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.botoes-cadastro button:hover {
+    background-color: #45a049;
+}

@@ -1,0 +1,205 @@
+/* TodosCadastros.css */
+
+:root {
+  --primary-color: #4361ee;
+  --primary-dark: #3a0ca3;
+  --primary-light: #4895ef;
+  --secondary-color: #f72585;
+  --success-color: #4cc9f0;
+  --error-color: #f72585;
+  --warning-color: #f8961e;
+  --light-color: #f8f9fa;
+  --dark-color: #212529;
+  --gray-color: #6c757d;
+  --light-gray: #e9ecef;
+  --border-radius: 12px;
+  --box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  --transition: all 0.3s ease;
+}
+
+.todos-cadastros {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  color: var(--dark-color);
+}
+
+.todos-cadastros h1 {
+  color: var(--primary-dark);
+  font-size: 2.2rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  position: relative;
+  padding-bottom: 0.5rem;
+}
+
+.todos-cadastros h1::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 4px;
+  background: linear-gradient(to right, var(--primary-color), var(--primary-light));
+  border-radius: 2px;
+}
+
+.todos-cadastros h2 {
+  color: var(--primary-color);
+  font-size: 1.5rem;
+  margin: 2rem 0 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--light-gray);
+}
+
+.todos-cadastros button {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 0.8rem 1.5rem;
+  border-radius: var(--border-radius);
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition);
+  margin-bottom: 1rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.todos-cadastros button:hover {
+  background-color: var(--primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
+}
+
+.todos-cadastros button::before {
+  content: '←';
+  font-size: 1.2rem;
+}
+
+.todos-cadastros ul {
+  list-style: none;
+  background-color: white;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  overflow: hidden;
+}
+
+.todos-cadastros li {
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--light-gray);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: var(--transition);
+}
+
+.todos-cadastros li:last-child {
+  border-bottom: none;
+}
+
+.todos-cadastros li:hover {
+  background-color: var(--light-color);
+  transform: translateX(5px);
+}
+
+.todos-cadastros li span {
+  font-weight: 500;
+  color: var(--primary-dark);
+}
+
+.mensagem {
+  padding: 1rem;
+  border-radius: var(--border-radius);
+  margin-bottom: 1.5rem;
+  font-size: 0.9rem;
+  text-align: center;
+  animation: slideDown 0.3s ease;
+  background-color: rgba(76, 201, 240, 0.2);
+  color: #0a6c74;
+  border-left: 4px solid var(--success-color);
+}
+
+.mensagem.erro {
+  background-color: rgba(247, 37, 133, 0.1);
+  color: #a31245;
+  border-left: 4px solid var(--error-color);
+}
+
+/* Cards para cada seção */
+.cadastro-section {
+  margin-bottom: 2.5rem;
+  background-color: white;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  overflow: hidden;
+}
+
+.cadastro-header {
+  background: linear-gradient(to right, var(--primary-color), var(--primary-light));
+  color: white;
+  padding: 1rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.cadastro-count {
+  background-color: white;
+  color: var(--primary-color);
+  padding: 0.3rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: bold;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .todos-cadastros {
+    padding: 1rem;
+  }
+  
+  .todos-cadastros h1 {
+    font-size: 1.8rem;
+  }
+  
+  .todos-cadastros h2 {
+    font-size: 1.3rem;
+  }
+  
+  .todos-cadastros li {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+}
+
+/* Animações */
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Ícones para cada tipo de cadastro */
+.gerente-icon::before {
+  content: '👔';
+  margin-right: 0.5rem;
+}
+
+.funcionario-icon::before {
+  content: '👷';
+  margin-right: 0.5rem;
+}
+
+.secretario-icon::before {
+  content: '📋';
+  margin-right: 0.5rem;
+}
+
+.cliente-icon::before {
+  content: '👤';
+  margin-right: 0.5rem;
+}
