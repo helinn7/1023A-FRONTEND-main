@@ -1,191 +1,270 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import GerenteCard from "./GerenteCard.tsx";
 import './Gerente.css';
 
 interface GerenteState {
-    idGerente: number,
-    nomeGerente: string,
-    salarioGerente: number,
-    departamentoGerente: string
+  idGerente: number;
+  nomeGerente: string;
+  salarioGerente: number;
+  departamentoGerente: string;
+  idUsuario: number;
 }
 
 function Gerente() {
-    const navigate = useNavigate();
-    const [idGerente, setIdGerente] = useState("");
-    const [nomeGerente, setNomeGerente] = useState("");
-    const [salarioGerente, setSalarioGerente] = useState("");
-    const [departamentoGerente, setDepartamentoGerente] = useState("");
-    const [mensagem, setMensagem] = useState("");
-    const [gerentes, setGerentes] = useState<GerenteState[]>([]);
-    const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState<GerenteState>({
+    idGerente: 0,
+    nomeGerente: "",
+    salarioGerente: 0,
+    departamentoGerente: "",
+    idUsuario: 0
+  });
+  const [idGerenteEditando, setIdGerenteEditando] = useState<number | null>(null);
+  const [mensagem, setMensagem] = useState("");
+  const [gerentes, setGerentes] = useState<GerenteState[]>([]);
+  const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        const buscaDados = async () => {
-            setLoading(true);
-            try {
-                const resultado = await fetch('http://localhost:8000/gerente');
-                if (resultado.status === 200 || resultado.status === 201) {
-                    const dados = await resultado.json();
-                    setGerentes(dados);
-                }
-                if (resultado.status === 400) {
-                    const erro = await resultado.json();
-                    setMensagem(erro.mensagem);
-                }
-            } catch (erro) {
-                setMensagem("Fetch não encontrado");
-            }
-            setLoading(false);
-        };
-        buscaDados();
-    }, []);
-
-    async function TrataCadastro(event: React.FormEvent<HTMLFormElement>) {
-        event.preventDefault();
-
-        if (!nomeGerente || !salarioGerente || !departamentoGerente) {
-            setMensagem("Preencha todos os campos obrigatórios.");
-            return;
+  useEffect(() => {
+    const buscaDados = async () => {
+      try {
+        const resultado = await fetch('http://localhost:8000/gerente');
+        if (resultado.ok) {
+          const dados = await resultado.json();
+          setGerentes(dados);
+        } else {
+          setMensagem("Erro ao buscar gerentes.");
         }
-        if (parseFloat(salarioGerente) < 0) {
-            setMensagem("Salário não pode ser negativo.");
-            return;
-        }
-
-        const novoGerente = {
-            idGerente: idGerente ? Number(idGerente) : undefined,
-            nomeGerente: nomeGerente,
-            salarioGerente: parseFloat(salarioGerente),
-            departamentoGerente: departamentoGerente
-        };
-
-        try {
-            const resposta = await fetch('http://localhost:8000/gerente', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(novoGerente)
-            });
-            if (resposta.status === 201 || resposta.status === 200) {
-                const gerenteCriado = await resposta.json();
-                setGerentes([...gerentes, gerenteCriado]);
-                setMensagem('Gerente cadastrado com sucesso!');
-            } else {
-                setMensagem('Erro ao cadastrar gerente.');
-            }
-        } catch (erro) {
-            setMensagem('Erro de conexão com o backend.');
-        }
-
-        setIdGerente("");
-        setNomeGerente("");
-        setSalarioGerente("");
-        setDepartamentoGerente("");
-    }
-
-    function trataIdGerente(event: React.ChangeEvent<HTMLInputElement>) {
-        setIdGerente(event.target.value);
-    }
-
-    function trataNomeGerente(event: React.ChangeEvent<HTMLInputElement>) {
-        setNomeGerente(event.target.value);
-    }
-
-    function trataSalarioGerente(event: React.ChangeEvent<HTMLInputElement>) {
-        setSalarioGerente(event.target.value);
-    }
-
-    function trataDepartamentoGerente(event: React.ChangeEvent<HTMLInputElement>) {
-        setDepartamentoGerente(event.target.value);
-    }
-
-    const excluirGerente = async (id: number) => {
-        if (!window.confirm("Tem certeza que deseja excluir este gerente?")) return;
-        try {
-            const resposta = await fetch(`http://localhost:8000/gerente/${id}`, {
-                method: 'DELETE',
-            });
-            if (resposta.status === 200 || resposta.status === 204) {
-                // Atualize a lista após deletar
-                setGerentes(gerentes.filter(g => g.idGerente !== id));
-                setMensagem('Gerente excluído com sucesso!');
-            } else {
-                setMensagem('Erro ao excluir gerente.');
-            }
-        } catch (erro) {
-            setMensagem('Erro ao conectar com o backend.');
-        }
+      } catch (error) {
+        setMensagem("Erro de conexão com o servidor.");
+      } finally {
+        setLoading(false);
+      }
     };
+    buscaDados();
+  }, []);
 
-    return (
-        <div className="gerente-container">
-            <h1 className="gerente-titulo">Cadastro de Gerentes</h1>
-            <button className="gerente-botao" onClick={() => navigate('/menu-cadastro')}>Início</button>
-            {mensagem && <div className="mensagem"><p>{mensagem}</p></div>}
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: name === 'salarioGerente' || name === 'idUsuario' || name === 'idGerente'
+        ? Number(value)
+        : value
+    });
+  };
 
-            <form onSubmit={TrataCadastro}>
-                <div className="form-group">
-                    <label htmlFor="idGerente">ID:</label>
-                    <input
-                        type="text"
-                        id="idGerente"
-                        value={idGerente}
-                        onChange={trataIdGerente}
-                        placeholder="Digite o ID"
-                    />
-                </div>
-                <div className="form-group">
-                    <label htmlFor="nomeGerente">Nome do Gerente:</label>
-                    <input
-                        type="text"
-                        id="nomeGerente"
-                        value={nomeGerente}
-                        onChange={trataNomeGerente}
-                        placeholder="Digite o nome"
-                        required
-                    />
-                </div>
-                <div className="form-group">
-                    <label htmlFor="salarioGerente">Salário:</label>
-                    <input
-                        type="number"
-                        id="salarioGerente"
-                        value={salarioGerente}
-                        onChange={trataSalarioGerente}
-                        placeholder="Digite o salário"
-                        required
-                    />
-                </div>
-                <div className="form-group">
-                    <label htmlFor="departamentoGerente">Departamento:</label>
-                    <input
-                        type="text"
-                        id="departamentoGerente"
-                        value={departamentoGerente}
-                        onChange={trataDepartamentoGerente}
-                        placeholder="Digite o departamento"
-                        required
-                    />
-                </div>
-                <button type="submit" className="gerente-botao">Cadastrar Gerente</button>
-            </form>
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setMensagem("");
 
-            <h2 className="gerente-titulo" style={{fontSize: "1.5rem"}}>Gerentes Cadastrados</h2>
-            {loading ? (
-                <p>Carregando...</p>
-            ) : gerentes.length === 0 ? (
-                <p>Nenhum gerente cadastrado ainda.</p>
-            ) : (
-                gerentes.map(gerente => (
-                    <GerenteCard
-                        key={gerente.idGerente}
-                        gerente={gerente}
-                        onExcluir={excluirGerente}
-                    />
-                ))
-            )}
+    if (!formData.nomeGerente || !formData.departamentoGerente || formData.idUsuario <= 0) {
+      setMensagem("Preencha todos os campos obrigatórios.");
+      return;
+    }
+
+    try {
+      const url = idGerenteEditando 
+        ? `http://localhost:8000/gerente/${idGerenteEditando}`
+        : 'http://localhost:8000/gerente';
+
+      const method = idGerenteEditando ? 'PUT' : 'POST';
+
+      const resposta = await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+
+      if (resposta.ok) {
+        const gerenteAtualizado = await resposta.json();
+        
+        if (idGerenteEditando) {
+          setGerentes(gerentes.map(g => 
+            g.idGerente === idGerenteEditando ? gerenteAtualizado : g
+          ));
+          setMensagem("Gerente atualizado com sucesso!");
+        } else {
+          setGerentes([...gerentes, gerenteAtualizado]);
+          setMensagem("Gerente cadastrado com sucesso!");
+        }
+
+        limparFormulario();
+      } else {
+        const erro = await resposta.json();
+        setMensagem(erro.message || "Erro ao processar a requisição.");
+      }
+    } catch (error) {
+      setMensagem("Erro de conexão com o servidor.");
+    }
+  }
+
+  const limparFormulario = () => {
+    setFormData({
+      idGerente: 0,
+      nomeGerente: "",
+      salarioGerente: 0,
+      departamentoGerente: "",
+      idUsuario: 0
+    });
+    setIdGerenteEditando(null);
+  };
+
+  const excluirGerente = async (id: number) => {
+    if (!window.confirm("Tem certeza que deseja excluir este gerente?")) return;
+    
+    try {
+      const resposta = await fetch(`http://localhost:8000/gerente/${id}`, {
+        method: 'DELETE',
+      });
+      
+      if (resposta.ok) {
+        setGerentes(gerentes.filter(g => g.idGerente !== id));
+        setMensagem("Gerente excluído com sucesso.");
+        if (idGerenteEditando === id) limparFormulario();
+      } else {
+        setMensagem("Erro ao excluir gerente.");
+      }
+    } catch {
+      setMensagem("Erro de conexão com o servidor.");
+    }
+  };
+
+  const editarGerente = (gerente: GerenteState) => {
+    setFormData({ ...gerente });
+    setIdGerenteEditando(gerente.idGerente);
+    setMensagem(`Editando gerente: ${gerente.nomeGerente}`);
+  };
+
+  return (
+    <div className="gerente-container">
+      <h1 className="gerente-titulo">Cadastro de Gerentes</h1>
+      <button className="gerente-botao" onClick={() => navigate('/menu-cadastro')}>Início</button>
+      
+      {mensagem && (
+        <div className={`mensagem ${mensagem.includes("sucesso") ? "sucesso" : "erro"}`}>
+          <p>{mensagem}</p>
         </div>
-    );
-}
-export default Gerente;
+      )}
 
+      <form onSubmit={handleSubmit}>
+        <div className="form-group">
+          <label htmlFor="idGerente">ID do Gerente:</label>
+          <input
+            type="number"
+            id="idGerente"
+            name="idGerente"
+            value={formData.idGerente || ""}
+            onChange={handleInputChange}
+            min="0"
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="nomeGerente">Nome:</label>
+          <input
+            type="text"
+            id="nomeGerente"
+            name="nomeGerente"
+            value={formData.nomeGerente}
+            onChange={handleInputChange}
+            required
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="salarioGerente">Salário:</label>
+          <input
+            type="number"
+            id="salarioGerente"
+            name="salarioGerente"
+            value={formData.salarioGerente || ""}
+            onChange={handleInputChange}
+            min="0"
+            step="0.01"
+            required
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="departamentoGerente">Departamento:</label>
+          <input
+            type="text"
+            id="departamentoGerente"
+            name="departamentoGerente"
+            value={formData.departamentoGerente}
+            onChange={handleInputChange}
+            required
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="idUsuario">ID do Usuário:</label>
+          <input
+            type="number"
+            id="idUsuario"
+            name="idUsuario"
+            value={formData.idUsuario || ""}
+            onChange={handleInputChange}
+            min="1"
+            required
+          />
+        </div>
+        
+        <div className="botoes-acao">
+          <button type="submit" className="gerente-botao">
+            {idGerenteEditando ? "Atualizar Gerente" : "Cadastrar Gerente"}
+          </button>
+          {idGerenteEditando && (
+            <button 
+              type="button" 
+              onClick={limparFormulario}
+              className="gerente-botao cancelar"
+            >
+              Cancelar Edição
+            </button>
+          )}
+        </div>
+      </form>
+
+      <h2 className="gerente-titulo lista-titulo">Gerentes Cadastrados</h2>
+      {loading ? (
+        <p>Carregando...</p>
+      ) : gerentes.length === 0 ? (
+        <p>Nenhum gerente cadastrado ainda.</p>
+      ) : (
+        <div className="gerentes-lista">
+          {gerentes.map((gerente, index) => (
+            <div
+              key={gerente.idGerente || `g-${index}`}
+              style={{
+                border: "1px solid #ddd",
+                borderRadius: "8px",
+                padding: "16px",
+                margin: "16px 0",
+                background: "#fafbfc"
+              }}
+            >
+              <div><strong>ID:</strong> {gerente.idGerente}</div>
+              <div><strong>Nome:</strong> {gerente.nomeGerente}</div>
+              <div><strong>Salário:</strong> R$ {gerente.salarioGerente}</div>
+              <div><strong>Departamento:</strong> {gerente.departamentoGerente}</div>
+              <div><strong>ID do Usuário:</strong> {gerente.idUsuario}</div>
+              <button
+                className="gerente-botao"
+                style={{ background: "#e67e22", marginTop: "8px", marginRight: "8px" }}
+                onClick={() => editarGerente(gerente)}
+              >
+                Editar
+              </button>
+              <button
+                className="gerente-botao"
+                style={{ background: "#e74c3c", marginTop: "8px" }}
+                onClick={() => excluirGerente(gerente.idGerente)}
+              >
+                Excluir
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+export default Gerente;

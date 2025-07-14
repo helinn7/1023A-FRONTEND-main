@@ -1,11 +1,12 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import PaginaCadastroUsuario from "./Pagina.tsx";
-import PaginaLogin from "./PaginaLogin.tsx";
-import MenuCadastro from "./MenuCadastro.tsx";
-import Funcionario from "./Funcionario.tsx";
-import Gerente from "./Gerente.tsx";
-import Secretario from "./Secretario.tsx";
-import TodosCadastros from "./TodosCadastros.tsx";
+import PaginaCadastroUsuario from "./Pagina";
+import PaginaLogin from "./PaginaLogin";
+import MenuCadastro from "./MenuCadastro";
+import Funcionario from "./Funcionario";
+import Gerente from "./Gerente";
+import Secretario from "./Secretario";
+import TodosCadastros from "./TodosCadastros";
+import EditarUsuario from './EditarUsuario';
 
 // Importe as páginas de cadastro quando criar
 
@@ -20,10 +21,13 @@ function App() {
                 <Route path="/cadastro-gerente" element={<Gerente />} />
                 <Route path="/cadastro-secretario" element={<Secretario />} />
                 <Route path="/todos-cadastros" element={<TodosCadastros />} />
+                <Route path="/editar-usuario/:id" element={<EditarUsuario />} />
             </Routes>
         </BrowserRouter>
     );
 }
 
 export default App;
+
+
 

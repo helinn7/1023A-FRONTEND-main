@@ -56,7 +56,6 @@ function PaginaLogin() {
             <div className="login-content">
                 <div className="login-card">
                     <div className="login-header">
-                        <img src="https://sdmntprsouthcentralus.oaiusercontent.com/files/00000000-258c-61f7-ba83-37c28f632f4b/raw?se=2025-07-08T14%3A53%3A50Z&sp=r&sv=2024-08-04&sr=b&scid=3250a5fc-12fc-575a-921e-86379424bdc2&skoid=71e8fa5c-90a9-4c17-827b-14c3005164d6&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-07-07T22%3A27%3A01Z&ske=2025-07-08T22%3A27%3A01Z&sks=b&skv=2024-08-04&sig=SNYy%2BN4cUS4BdWEPyPtaSFZ0oWiYynDeBFcelkCWqv0%3D" alt="Logo" className="login-logo" />
                         <h1>Bem-vindo de volta</h1>
                         <p>Faça login para acessar o painel administrativo</p>
                     </div>

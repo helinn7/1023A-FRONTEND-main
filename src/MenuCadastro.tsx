@@ -12,9 +12,6 @@ function MenuCadastro() {
                     <button onClick={() => navigate('/cadastro-funcionario')}>
                         Cadastro de Funcionários
                     </button>
-                    <button onClick={() => navigate('/cadastro-cliente')}>
-                        Cadastro de Clientes
-                    </button>
                     <button onClick={() => navigate('/cadastro-gerente')}>
                         Cadastro de Gerentes
                     </button>
